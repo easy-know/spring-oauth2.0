@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<div layout:fragment="content" class="py-4">
+    <div class="row justify-content-md-center">
+        <div class="col-6">
+            <h3 class="mb-3 fw-bolder py-3 mb-4">전체 애플리케이션</h3>
+
+            <div class="d-grid gap-2">
+                <button type="button" class="btn btn-primary mb-3" data-toggle="modal"
+                        data-target="#applicationAddModal">
+                    애플리케이션 추가하기
+                </button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="applicationAddModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-lg">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bolder" id="staticModalLabel">애플리케이션 추가</h5>
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="application_create_form" method="post">
+                            <div class="modal-body">
+                                <div class="mb-4">
+                                    <label for="name" class="form-label">애플리케이션 이름</label>
+                                    <input type="text" class="form-control p-3" name="name" id="name"
+                                           aria-describedby="emailHelp">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="company" class="form-label">회사명</label>
+                                    <input type="text" class="form-control p-3" name="company" id="company">
+                                </div>
+                                <p><small>- 입력된 정보는 사용자가 GSITM 로그인을 할 때 표시됩니다.<br>
+                                    - 정보가 정확하지 않은 경우 서비스 이용이 제한될 수 있습니다.</small></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">저장</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="application_list" class="list-group">
+
+            </div>
+        </div>
+
+    </div>
+    <script>
+        const APPLICATION_CREATE_FORM = $("#application_create_form");
+
+        $(document).ready(function () {
+            loadData();
+        });
+
+        function loadData() {
+            $.ajax({
+                url: "http://localhost:8080/api/application",
+                type: 'GET',
+                success: function (data, status) {
+                    if (status === "success") {
+                        // console.log("Data: " + JSON.stringify(data));
+                        showApplication(data);
+                    }
+                }
+            });
+        }
+
+        function showApplication(appList) {
+            for (idx in appList) {
+                console.log(appList[idx]);
+
+                let app = `<a href="/application/${appList[idx].name}" class="list-group-item list-group-item-action mb-3" aria-current="true">
+                               <div class="d-flex w-100 justify-content-between">
+                                   <h5 class="mb-1">${appList[idx].name}</h5>
+                               </div>
+                               <p class="mb-1">${appList[idx].company}</p>
+                           </a>
+                        `;
+
+                $("#application_list").append(app);
+            }
+        }
+
+        APPLICATION_CREATE_FORM.on("submit", function (event) {
+            event.preventDefault();
+
+            let applicationCreateForm = APPLICATION_CREATE_FORM.serializeObject();
+
+            $.ajax({
+                url: "http://localhost:8080/api/application",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(applicationCreateForm),
+                success: function (data, status) {
+                    alert("Data: " + data + "\nStatus: " + status);
+                    loadData();
+                },
+                complete: function () {
+                    $("#applicationAddModal").modal("hide");
+                }
+            });
+        });
+    </script>
+</div>
+</html>

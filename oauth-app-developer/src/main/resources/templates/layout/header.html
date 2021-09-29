@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header class="py-2 bg-dark mb-3" th:fragment="headerFragment">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand px-2">Spring OAuth2.0 Admin Page</a>
+            <div sec:authorize="isAuthenticated()" class="d-flex">
+                <a href="/logout" class="btn btn-danger">로그아웃</a>
+            </div>
+        </div>
+    </nav>
+</header>
+</html>

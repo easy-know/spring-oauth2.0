@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    include: common
+
+server:
+  port: 8090
+
+security:
+  oauth2:
+    jwt:
+      signkey: 123@#$

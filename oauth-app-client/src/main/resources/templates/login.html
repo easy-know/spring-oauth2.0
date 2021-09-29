@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<div layout:fragment="content">
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <button id="btnGsitmLogin" data-social="gsitm" class="btn btn-primary btn-social" type="button">GSITM으로 로그인</button>
+    </div>
+    <script>
+        // $(document).on('click', '.btn-social', function() {
+        //     location.href = "http://localhost:8090/login/" + $(this).data('social');
+        // });
+        $(document).on('click', '.btn-social', function() {
+            location.href = "/login";
+        });
+    </script>
+</div>
+</html>

@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    include: common
+
+server:
+  port: 8086
+
+security:
+  oauth2:
+    client:
+      client-id: 33320606-de10-403f-8900-2045e0bcde06
+      client-secret: career
+      redirect-uri: http://localhost:8086/oauth2/callback
+
+    resource:
+      token-info-uri: http://localhost:8081/oauth/check_token

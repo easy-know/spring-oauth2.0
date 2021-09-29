@@ -1,0 +1,8 @@
+rootProject.name = 'spring-oauth2.0'
+include 'domain-rds'
+include 'oauth-app-developer'
+include 'oauth-app-resource-server'
+include 'oauth-app-auth-server'
+include 'oauth-app-client'
+include 'common'
+
