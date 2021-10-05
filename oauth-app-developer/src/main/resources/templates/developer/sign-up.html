@@ -9,7 +9,8 @@
             <form id="sign_up_form" novalidate>
                 <div class="mb-4">
                     <label for="email" class="form-label">이메일</label>
-                    <input type="email" name="email" placeholder="abc123@example.com" class="form-control p-3" id="email" aria-describedby="emailHelp"
+                    <input type="email" name="email" placeholder="abc123@example.com" class="form-control p-3"
+                           id="email" aria-describedby="emailHelp"
                            required>
                     <div class="invalid-feedback">
                         이메일을 입력하셔야 합니다.
@@ -17,16 +18,18 @@
                 </div>
                 <div class="mb-4">
                     <label for="password" class="form-label">비밀번호</label>
-                    <input type="password" name="password" placeholder="8자 이상의 숫자, 영문, 특수 기호가 포함되어야 합니다." class="form-control p-3" id="password" required>
+                    <input type="password" name="password" minlength="8" placeholder="8자 이상의 숫자, 영문, 특수 기호가 포함되어야 합니다."
+                           class="form-control p-3" id="password" required>
                     <div class="invalid-feedback">
                         비밀번호를 입력하셔야 합니다.
                     </div>
                 </div>
                 <div class="mb-5">
                     <label for="password_check" class="form-label">비밀번호 확인</label>
-                    <input type="password" name="passwordCheck" placeholder="8자 이상의 숫자, 영문, 특수 기호가 포함되어야 합니다." class="form-control p-3" id="password_check" required>
+                    <input type="password" name="passwordCheck" placeholder="8자 이상의 숫자, 영문, 특수 기호가 포함되어야 합니다."
+                           class="form-control p-3" id="password_check" required>
                     <div class="invalid-feedback">
-                        비밀번호를 입력하셔야 합니다.
+                        비밀번호가 일치하지 않습니다.
                     </div>
                 </div>
                 <div class="d-grid gap-2">
@@ -36,36 +39,111 @@
         </div>
     </div>
     <script>
-        let signUpForm = document.getElementById("sign_up_form");
-
-        signUpForm.addEventListener("submit", function (event) {
-            if (signUpForm.checkValidity() == false) {
-                event.preventDefault();
-                event.stopPropagation();
-                signUpForm.classList.add("was-validated");
-
-                return false;
-            }
-
-            event.preventDefault();
-
-            let signUpFormDataObject = $("#sign_up_form").serializeObject();
-
-            if (signUpFormDataObject.password !== signUpFormDataObject.passwordCheck) {
-                alert("비밀번호가 일치하지 않습니다.");
-                return false;
-            }
-
-            $.ajax({
-                url: "/api/developer",
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(signUpFormDataObject),
-                success: function (data, status, xhr) {
-                    location.href = xhr.getResponseHeader("Location");
+        $(function () {
+            $("#sign_up_form").validate({
+                /**
+                 * submitHandler : form 양식이 유효한 경우 실질적인
+                 * submit을 하기 위한 콜백 핸들러.
+                 * 유효성이 확인된 후 Ajax를 통해 처리하기에 적합하다.
+                 */
+                submitHandler: function () {
+                    var f = confirm("회원가입을 완료하겠습니까?");
+                    if (f) {
+                        let signUpFormDataObject = $("#sign_up_form").serializeObject();
+                        $.ajax({
+                            url: "/api/developer",
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(signUpFormDataObject),
+                            success: function (data, status, xhr) {
+                                location.href = xhr.getResponseHeader("Location");
+                            },
+                            error: function (request) {
+                                alert(request.responseJSON.description);
+                                $("#email").val('');
+                                $("#email").removeClass('valid');
+                                $("#email").addClass('error');
+                            }
+                        });
+                    } else {
+                        return false;
+                    }
+                },
+                // 체크할 항목들의 룰 설정
+                rules: {
+                    email: {
+                        required: true,
+                        minlength: 2,
+                        email: true
+                    },
+                    password: {
+                        required: true,
+                        minlength: 8,
+                        maxlength: 16,
+                        regex: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+                    },
+                    passwordCheck: {
+                        required: true,
+                        equalTo: "#password",
+                    }
+                },
+                //규칙체크 실패시 출력될 메시지
+                messages: {
+                    email: {
+                        required: "이메일은 필수로 입력해야 합니다.",
+                        minlength: "최소 {0}글자이상이어야 합니다",
+                        email: "메일규칙에 어긋납니다"
+                    },
+                    password: {
+                        required: "비밀번호는 필수로 입력해야 합니다.",
+                        minlength: "비밀번호는 최소 {0}글자 이상이어야 합니다",
+                        maxlength: "비밀번호는 최대 {0}글자 이하이어야 합니다.",
+                        regex: "비밀번호는 영문 소문자, 대문자, 숫자를 포함해야 합니다."
+                    },
+                    passwordCheck: {
+                        required: "비밀번호 확인은 필수로 입력해야 합니다.",
+                        equalTo: "비밀번호가 일치하지 않습니다.",
+                    }
+                },
+                errorElement: "label",
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
+                    error.css("color", "red");
+                    error.css("marginTop", "0.5em");
                 }
-            });
-        }, false);
+            })
+        })
+
+        // let signUpForm = document.getElementById("sign_up_form");
+        //
+        // signUpForm.addEventListener("submit", function (event) {
+        //     if (signUpForm.checkValidity() == false) {
+        //         event.preventDefault();
+        //         event.stopPropagation();
+        //         signUpForm.classList.add("was-validated");
+        //
+        //         return false;
+        //     }
+        //
+        //     event.preventDefault();
+        //
+        //     let signUpFormDataObject = $("#sign_up_form").serializeObject();
+        //
+        //     if (signUpFormDataObject.password !== signUpFormDataObject.passwordCheck) {
+        //         alert("비밀번호가 일치하지 않습니다.");
+        //         return false;
+        //     }
+        //
+        //     $.ajax({
+        //         url: "/api/developer",
+        //         type: 'POST',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(signUpFormDataObject),
+        //         success: function (data, status, xhr) {
+        //             location.href = xhr.getResponseHeader("Location");
+        //         }
+        //     });
+        // }, false);
     </script>
 </div>
 </html>

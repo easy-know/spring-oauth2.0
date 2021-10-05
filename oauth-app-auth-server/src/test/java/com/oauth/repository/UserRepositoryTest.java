@@ -1,5 +1,6 @@
 package com.oauth.repository;
 
+import com.oauth.user.entity.Gender;
 import com.oauth.user.entity.User;
 import com.oauth.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,12 @@ public class UserRepositoryTest {
     @Test
     public void insert() {
         userRepository.save(User.builder()
-                .uid("test@gmail.com")
+                .uid("example@gmail.com")
                 .password(passwordEncoder.encode("test"))
-                .name("이진호")
+                .name("홍길동")
+                .phone("01012345678")
+                .gender(Gender.MAN)
+                .birth("19901001")
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());
     }

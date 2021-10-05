@@ -3,6 +3,7 @@ package com.oauth.oauth2.client_details.service;
 import com.oauth.oauth2.client_details.dto.OAuthClientDetailsDto;
 import com.oauth.oauth2.client_details.entity.OAuthClientDetails;
 import com.oauth.oauth2.client_details.repository.OAuthClientDetailsRepository;
+import com.oauth.util.AES256;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,15 +20,17 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OAuthClientDetailsService {
+
+    private final AES256 aes256;
     private final OAuthClientDetailsRepository oAuthClientDetailsRepository;
 
-    public OAuthClientDetailsDto loadDetail(String clientId) {
+    public OAuthClientDetailsDto loadDetail(String clientId) throws Exception {
         OAuthClientDetails oAuthClientDetail = oAuthClientDetailsRepository.findByClientId(clientId);
 
         return OAuthClientDetailsDto.builder()
                 .id(oAuthClientDetail.getId())
                 .clientId(oAuthClientDetail.getClientId())
-                .clientSecret(oAuthClientDetail.getClientSecret())
+                .clientSecret(aes256.decrypt(oAuthClientDetail.getClientSecret()))
                 .webServerRedirectUri(oAuthClientDetail.getWebServerRedirectUri())
                 .build();
     }

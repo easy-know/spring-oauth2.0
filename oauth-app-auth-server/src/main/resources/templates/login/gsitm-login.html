@@ -2,23 +2,26 @@
 <html lang="ko"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/default}">
-<div layout:fragment="content">
+<div layout:fragment="content" class="mb-4">
     <div class="row">
         <div class="col-8 py-3">
             <img src="/images/login_thumbnail.png" class="img-fluid" alt="login_image">
         </div>
         <div class="col-4 py-3">
+            <h2 class="fw-bold py-3 mt-3 mb-3">GSITM</h2>
             <form id="groupware_login_form" method="post" action="/authenticate">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Email address</label>
-                    <input type="email" class="form-control" name="username" id="username" aria-describedby="emailHelp">
+                <div class="mb-4">
+                    <label for="username" class="form-label d-none">Email address</label>
+                    <input type="email" class="form-control p-3" name="username" id="username" placeholder="그룹웨어 이메일을 입력하세요." aria-describedby="emailHelp">
                     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password" id="password">
+                <div class="mb-5">
+                    <label for="password" class="form-label d-none">Password</label>
+                    <input type="password" class="form-control p-3" placeholder="비밀번호" name="password" id="password">
                 </div>
-                <button type="submit" class="btn btn-primary">로그인</button>
+                <div class="d-grid gap-2 mx-auto">
+                    <button type="submit" class="btn btn-primary p-2">로그인</button>
+                </div>
             </form>
         </div>
     </div>

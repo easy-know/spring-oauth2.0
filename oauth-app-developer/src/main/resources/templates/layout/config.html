@@ -4,38 +4,70 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
-    <title>Front</title>
+    <title>Spring OAuth2.0 Developer</title>
 
     <!--  jquery  -->
     <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
 
     <!--  bootstrap  -->
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <script src="/js/bootstrap.bundle.min.js"></script>
 
-    <script th:inline="javascript">
-        var CUSTOM_CONTENT_TYPE = '';
-    </script>
+    <!--  popper  -->
+    <script src="/js/popper.js"></script>
+
+    <!--  fontawesome  -->
+    <script src="https://kit.fontawesome.com/0cec22532a.js" crossorigin="anonymous"></script>
+
     <script>
+        //정규표현을 이용한 휴대폰 번호 양식
+        $.validator.addMethod("regex", function (value, element, regexp) {
+            let re = new RegExp(regexp);
+            let res = re.test(value)
+            return res;
+        })
+
         // form -> object
-        jQuery.fn.serializeObject = function() {
+        jQuery.fn.serializeObject = function () {
             var obj = null;
             try {
-                if(this[0].tagName && this[0].tagName.toUpperCase() == "FORM" ) {
+                if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
                     var arr = this.serializeArray();
-                    if(arr){ obj = {};
-                        jQuery.each(arr, function() {
-                            obj[this.name] = this.value; });
+                    if (arr) {
+                        obj = {};
+                        jQuery.each(arr, function () {
+                            obj[this.name] = this.value;
+                        });
                     }
                 }
-            }catch(e) {
+            } catch (e) {
                 alert(e.message);
-            }finally {}
+            } finally {
+            }
             return obj;
         }
 
-        $(document).ready(function(e){
+        $(document).ready(function (e) {
         });
     </script>
+
+    <style>
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        input[class="form-control p-3 error"] {
+            border: 1px solid #f00 !important;
+        }
+
+        input[class="form-control p-3 error"]:focus {
+            box-shadow: 0 0 0 0.25rem rgb(220 53 60 / 25%);
+        }
+
+    </style>
 </head>
 </html>

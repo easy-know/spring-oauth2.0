@@ -90,7 +90,7 @@ public class OAuthRestController {
             cookieRefreshToken.setPath("/");
             httpServletResponse.addCookie(cookieRefreshToken);
 
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(gson.fromJson(response.getBody(), OAuthToken.class));
 //            return gson.fromJson(response.getBody(), OAuthToken.class);
         }
 

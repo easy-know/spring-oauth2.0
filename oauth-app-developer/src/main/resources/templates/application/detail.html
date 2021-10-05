@@ -6,7 +6,7 @@
     <div class="row justify-content-center">
         <div class="col-8 mb-3 card py-3">
             <h3 class="mb-3">기본 정보</h3>
-            <table id="app_info_table" class="table">
+            <table id="app_info_table" class="table mb-0">
 
             </table>
         </div>
@@ -14,7 +14,7 @@
             <div class="row justify-content-between">
                 <h3>앱 키</h3>
             </div>
-            <table id="key_table" class="table">
+            <table id="key_table" class="table mb-0">
 
             </table>
         </div>
@@ -38,7 +38,7 @@
                             </div>
                             <form id="redirect_url_add_form" method="post">
                                 <div class="modal-body">
-                                    <textarea class="form-control" placeholder="Leave redirect urls here" name="redirectUrl" id="redirectUrl" style="height: 100px"></textarea>
+                                    <label for="redirectUrl"></label><textarea class="form-control" placeholder="Leave redirect urls here" name="redirectUrl" id="redirectUrl" style="height: 100px"></textarea>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">추가</button>
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            <table id="redirect_url_table" class="table">
+            <table id="redirect_url_table" class="table mb-0">
 
             </table>
             <p class="small w-100">
@@ -169,11 +169,10 @@
                 contentType: 'application/json',
                 data: JSON.stringify(data),
                 success: function (data, status) {
-                    alert("Data: " + data + "\nStatus: " + status);
+                    console.log("Data: " + data + "\nStatus: " + status);
                     loadApplicationDetail();
                 },
                 complete : function() {
-                    alert("complete!");
                     location.reload(true);
                 }
             });

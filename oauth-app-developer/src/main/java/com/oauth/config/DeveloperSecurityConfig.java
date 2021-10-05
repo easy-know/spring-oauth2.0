@@ -1,5 +1,6 @@
 package com.oauth.config;
 
+import com.oauth.security.DeveloperLoginFailureHandler;
 import com.oauth.security.DeveloperUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 /**
  * Description :
@@ -51,6 +53,8 @@ public class DeveloperSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/sign-in")
                 .usernameParameter("email")
                 .loginProcessingUrl("/authenticate")
+                .failureUrl("/sign-in?error=true")
+                .failureHandler(failureHandler())
                 .defaultSuccessUrl("/application")
                 .permitAll()
                 .and()
@@ -67,5 +71,10 @@ public class DeveloperSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(developerUserDetailService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public AuthenticationFailureHandler failureHandler() {
+        return new DeveloperLoginFailureHandler();
     }
 }

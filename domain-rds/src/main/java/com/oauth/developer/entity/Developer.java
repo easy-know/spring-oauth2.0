@@ -54,4 +54,8 @@ public class Developer extends BaseTimeEntity {
     @OneToMany(mappedBy = "developer")
     @JsonIgnore
     private List<Application> applicationList;
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }

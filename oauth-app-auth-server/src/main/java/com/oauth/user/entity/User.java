@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -43,10 +45,19 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(length = 10)
+    private String birth;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(length = 10)
+    private String phone;
+
     @Column(length = 100)
     private String provider;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

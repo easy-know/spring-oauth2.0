@@ -29,7 +29,7 @@ public class OAuth2RestController {
     private final OAuthClientDetailsService oAuthClientDetailsService;
 
     @GetMapping("{clientId}")
-    public ResponseEntity loadDetail(@PathVariable("clientId") String clientId) {
+    public ResponseEntity loadDetail(@PathVariable("clientId") String clientId) throws Exception {
         log.info("loadOAuthDetails(): " + clientId);
         return ResponseEntity.ok(oAuthClientDetailsService.loadDetail(clientId));
     }

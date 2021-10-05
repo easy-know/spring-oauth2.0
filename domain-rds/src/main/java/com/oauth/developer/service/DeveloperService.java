@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
+import java.util.Optional;
+
 /**
  * Description :
  *
@@ -26,6 +29,10 @@ public class DeveloperService {
     @Transactional
     public String save(DeveloperDto developerDto) {
 
+        if (developerRepository.existsByEmail(developerDto.getEmail())) {
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        }
+
         Developer developer = Developer.builder()
                 .email(developerDto.getEmail())
                 .password(developerDto.getPassword())
@@ -33,5 +40,13 @@ public class DeveloperService {
                 .build();
 
         return developerRepository.save(developer).getEmail();
+    }
+
+    @Transactional
+    public void update(DeveloperDto developerDto) {
+        Optional<Developer> optionalDeveloper = developerRepository.findByEmail(developerDto.getEmail());
+        optionalDeveloper.ifPresent(developer -> {
+            developer.changePassword(developerDto.getPassword());
+        });
     }
 }

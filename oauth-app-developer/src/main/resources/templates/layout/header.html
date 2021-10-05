@@ -2,13 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <header class="py-2 bg-dark mb-3" th:fragment="headerFragment">
-    <nav class="navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand px-2">Spring OAuth2.0 Admin Page</a>
-            <div sec:authorize="isAuthenticated()" class="d-flex">
-                <a href="/logout" class="btn btn-danger">로그아웃</a>
+    <!--    <nav class="navbar">-->
+    <div class="container-fluid">
+        <div class="row justify-content-between">
+            <div class="col">
+                <a class="navbar-brand px-2 text-white">Spring OAuth2.0 Developer</a>
+            </div>
+            <div class="col">
+                <div sec:authorize="isAuthenticated()" class="d-flex flex-row-reverse">
+                    <div class="dropdown">
+                        <button type="button" class="navbar-toggler" id="dropdownMenuOffset"
+                                data-toggle="dropdown" aria-expanded="false" data-offset="-110,15">
+                            <i class="fas fa-bars" style="color: gray"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+                            <li><a href="/application" class="btn">내 애플리케이션</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a href="/logout" class="btn">로그아웃</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div sec:authorize="isAnonymous()" class="d-flex flex-row-reverse">
+                    <a sec:authorize="isAnonymous()" href="/sign-in"
+                            class="btn btn-outline-light" type="submit">Login
+                    </a>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
 </header>
 </html>
