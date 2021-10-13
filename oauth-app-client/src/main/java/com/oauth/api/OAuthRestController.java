@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.CookieGenerator;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Description :
@@ -39,17 +41,22 @@ public class OAuthRestController {
     private final Gson gson;
     private final RestTemplate restTemplate;
 
-    @Value("${security.oauth2.client.client-id}")
+    @Value("${spring.security.oauth2.client.registration.gsitm.client-id}")
     private String clientId;
 
-    @Value("${security.oauth2.client.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.gsitm.client-secret}")
     private String clientSecret;
 
-    @Value("${security.oauth2.client.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.gsitm.redirect-uri}")
     private String redirectUri;
 
+    @Value("${spring.security.oauth2.client.provider.gsitm.token-uri}")
+    private String tokenUri;
+
     @GetMapping(value = "/callback")
-    public ResponseEntity callbackSocial(@RequestParam String code, HttpServletResponse response) {
+    public ResponseEntity callbackSocial(HttpServletRequest request, @RequestParam(required = false) String code, HttpServletResponse response) throws URISyntaxException {
+        log.info(request.getQueryString());
+        log.info("code: " + code);
 
         String credentials = clientId+":"+clientSecret;
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
@@ -67,9 +74,12 @@ public class OAuthRestController {
         return getOAuthToken(headers, params, response);
     }
 
-    private ResponseEntity getOAuthToken(HttpHeaders headers, MultiValueMap<String, String> params, HttpServletResponse httpServletResponse) {
+    private ResponseEntity getOAuthToken(HttpHeaders headers,
+                                         MultiValueMap<String, String> params,
+                                         HttpServletResponse httpServletResponse) throws URISyntaxException {
+
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8090/oauth/token", request, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(tokenUri, request, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
 
@@ -78,19 +88,23 @@ public class OAuthRestController {
             log.info(oAuthToken.getAccess_token());
             Cookie cookieAccessToken = new Cookie("accessToken", oAuthToken.getAccess_token());
             cookieAccessToken.setMaxAge((int) oAuthToken.getExpires_in());
-            cookieAccessToken.setSecure(true);
-            cookieAccessToken.setHttpOnly(true);
             cookieAccessToken.setPath("/");
             httpServletResponse.addCookie(cookieAccessToken);
 
             log.info(oAuthToken.getRefresh_token());
             Cookie cookieRefreshToken = new Cookie("refreshToken", oAuthToken.getRefresh_token());
-            cookieRefreshToken.setSecure(true);
-            cookieRefreshToken.setHttpOnly(true);
             cookieRefreshToken.setPath("/");
             httpServletResponse.addCookie(cookieRefreshToken);
 
-            return ResponseEntity.ok().body(gson.fromJson(response.getBody(), OAuthToken.class));
+//            return ResponseEntity.ok().body(gson.fromJson(response.getBody(), OAuthToken.class));
+
+            URI redirectUri = new URI("/user");
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(redirectUri);
+            httpHeaders.add("accessToken", oAuthToken.getAccess_token());
+            httpHeaders.add("refreshToken", oAuthToken.getRefresh_token());
+
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
 //            return gson.fromJson(response.getBody(), OAuthToken.class);
         }
 
@@ -98,7 +112,7 @@ public class OAuthRestController {
     }
 
     @GetMapping(value = "/token/refresh")
-    public ResponseEntity refreshToken(@RequestParam String refreshToken, HttpServletResponse response) {
+    public ResponseEntity refreshToken(@RequestParam String refreshToken, HttpServletResponse response) throws URISyntaxException {
 
         String credentials = clientId+":"+clientSecret;
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));

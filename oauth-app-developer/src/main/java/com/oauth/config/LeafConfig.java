@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 
 /**
- * Description :
+ * Description : Sprint Security + Thymeleaf 적용 
  *
  * @author leejinho
  * @version 1.0

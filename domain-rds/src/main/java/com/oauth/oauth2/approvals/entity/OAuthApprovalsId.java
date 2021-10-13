@@ -12,9 +12,9 @@ import java.io.Serializable;
  */
 @Embeddable
 public class OAuthApprovalsId implements Serializable {
-    @Column
+    @Column(name = "USERID")
     private String userId;
 
-    @Column
+    @Column(name = "CLIENTID")
     private String clientId;
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
@@ -35,15 +36,14 @@ public class UserRepositoryTest {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Test
     public void insert() {
         userRepository.save(User.builder()
-                .uid("example@gmail.com")
+                .uid("it1455@gmail.com")
                 .password(passwordEncoder.encode("test"))
                 .name("홍길동")
                 .phone("01012345678")
-                .gender(Gender.MAN)
+                .gender(Gender.MALE)
                 .birth("19901001")
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build());

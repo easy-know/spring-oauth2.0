@@ -22,5 +22,13 @@
             <a href="/sign-up" class="card-link">회원 가입</a>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            var errorMessage = '[[${errorMessage}]]';
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        })
+    </script>
 </div>
 </html>

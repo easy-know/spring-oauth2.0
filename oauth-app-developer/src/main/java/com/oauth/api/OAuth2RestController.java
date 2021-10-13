@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author leejinho
  * @version 1.0
  */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,26 +30,23 @@ public class OAuth2RestController {
     private final OAuthClientDetailsService oAuthClientDetailsService;
 
     @GetMapping("{clientId}")
-    public ResponseEntity loadDetail(@PathVariable("clientId") String clientId) throws Exception {
-        log.info("loadOAuthDetails(): " + clientId);
+    public ResponseEntity<OAuthClientDetailsDto> loadDetail(@PathVariable("clientId") String clientId) {
         return ResponseEntity.ok(oAuthClientDetailsService.loadDetail(clientId));
     }
 
     @PostMapping("/redirect/{id}")
-    public ResponseEntity saveRedirect(@PathVariable String id, @RequestBody OAuthClientDetailsDto oAuthClientDetailsDto) {
-        log.info("saveRedirect(): " + oAuthClientDetailsDto.getWebServerRedirectUri());
+    public ResponseEntity<Long> saveRedirect(@PathVariable String id, @RequestBody OAuthClientDetailsDto oAuthClientDetailsDto) {
         return ResponseEntity.ok(oAuthClientDetailsService.saveRedirectUrl(Long.valueOf(id), oAuthClientDetailsDto.getWebServerRedirectUri()));
     }
 
     @PutMapping("{id}}")
-    public ResponseEntity updateRedirect(@PathVariable String id, @RequestBody OAuthClientDetailsDto oAuthClientDetailsDto) {
-        log.info("saveRedirect(): " + oAuthClientDetailsDto.getWebServerRedirectUri());
+    public ResponseEntity<Long> updateRedirect(@PathVariable String id, @RequestBody OAuthClientDetailsDto oAuthClientDetailsDto) {
         return ResponseEntity.ok(oAuthClientDetailsService.update(Long.valueOf(id), oAuthClientDetailsDto.getWebServerRedirectUri()));
     }
 
-    @DeleteMapping("{id}}")
-    public ResponseEntity updateRedirect(@PathVariable String id) {
+    @DeleteMapping("/redirect/{id}")
+    public ResponseEntity<Boolean> deleteRedirect(@PathVariable String id) {
         oAuthClientDetailsService.delete(Long.valueOf(id));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(true);
     }
 }

@@ -1,16 +1,25 @@
 spring:
   profiles:
     include: common
+  security:
+    oauth2:
+      client:
+        provider:
+          gsitm:
+            authorization-uri: http://localhost:8090/oauth/authorize
+            token-uri: http://localhost:8090/oauth/token
+            user-info-uri: http://localhost:8090/api/v1/user/mobile-number
+            user-name-attribute: uid
+        registration:
+          gsitm:
+            client-id: cbbb60d837f64851b600d0d717caa8c9
+            client-secret: f302e12e705a4d309f75b8debc8772e5
+            redirect-uri: http://localhost:8086/oauth2/callback
+            scope: read
+            response-type: code
+
+      resource:
+        token-info-uri: http://localhost:8081/oauth2/check_token
 
 server:
   port: 8086
-
-security:
-  oauth2:
-    client:
-      client-id: 33320606-de10-403f-8900-2045e0bcde06
-      client-secret: career
-      redirect-uri: http://localhost:8086/oauth2/callback
-
-    resource:
-      token-info-uri: http://localhost:8081/oauth/check_token

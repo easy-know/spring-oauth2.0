@@ -13,9 +13,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Gender {
-    MAN("남자", "0"),
-    WOMAN("여자", "1");
-
-    private String korean;
-    private String code;
+    MALE,
+    FEMALE;
 }

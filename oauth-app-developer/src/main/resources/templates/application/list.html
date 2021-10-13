@@ -94,7 +94,8 @@
             let applicationCreateForm = APPLICATION_CREATE_FORM.serializeObject();
 
             $.ajax({
-                url: "http://localhost:8080/api/application",
+                url: "http://localhost:8080/api/application/seed",
+                // url: "http://localhost:8080/api/application",    // 기존 버젼
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(applicationCreateForm),

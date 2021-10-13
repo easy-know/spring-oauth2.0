@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
-    Optional<Application> findByName(String name);
+    Application findByNameAndDeveloper_Id(String name, Long developerId);
     List<Application> findAllByDeveloper_Id(@Param(value = "developerId") Long developerId, Sort sort);
     Long countAllByDeveloperId(Long id);
 }

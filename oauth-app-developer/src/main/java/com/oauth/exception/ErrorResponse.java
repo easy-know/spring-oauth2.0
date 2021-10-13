@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.BindingResult;
 
+import java.util.Objects;
+
 /**
  * Description :
  *
@@ -31,10 +33,10 @@ public class ErrorResponse {
 
     public ErrorResponse makeBindingErrorResponse(BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            detail = bindingResult.getFieldError().getDefaultMessage();
+            detail = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             String bindResultCode = bindingResult.getFieldError().getCode();
 
-            switch (bindResultCode){
+            switch (Objects.requireNonNull(bindResultCode)){
                 case "NotNull":
                     code = ErrorCode.NOT_NULL.getCode();
                     description = ErrorCode.NOT_NULL.getDescription();

@@ -19,8 +19,8 @@ public class Oauth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.headers().frameOptions().disable();
-        http.authorizeRequests()
+        http.cors().and()
+                .authorizeRequests()
                 .antMatchers("/v1/users").access("#oauth2.hasScope('read')")
                 .anyRequest().authenticated();
     }

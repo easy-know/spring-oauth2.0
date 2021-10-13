@@ -45,6 +45,7 @@ public class OAuthClientDetails {
     private Integer refreshTokenValidity;  //   int null,
     private String additionalInformation;  //   varchar(4096) null,
     private String autoapprove;            //   varchar(256) null
+    private String secretKey;
 
     @OneToOne(mappedBy = "oAuthClientDetails", fetch = FetchType.LAZY)
     @JsonIgnore

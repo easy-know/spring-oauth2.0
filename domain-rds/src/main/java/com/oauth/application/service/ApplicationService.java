@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -47,8 +48,8 @@ public class ApplicationService {
                 .collect(Collectors.toList());
     }
 
-    public ApplicationDto loadDetail(String name) {
-        Application application = applicationRepository.findByName(name).get();
+    public ApplicationDto loadDetail(String name, Long id) {
+        Application application = applicationRepository.findByNameAndDeveloper_Id(name, id);
 
         ApplicationDto applicationDto = ApplicationDto.builder()
                 .id(application.getId())
@@ -60,48 +61,19 @@ public class ApplicationService {
         return applicationDto;
     }
 
-//    @Transactional
-//    public String save(ApplicationDto applicationDto, String clientSecret, Long id) {
-//        UUID clientId = UUID.randomUUID();
-//        AES256 aes256 = new AES256();
-//
-//        OAuthClientDetails oAuthClientDetails = OAuthClientDetails.builder()
-//                .clientId(clientId.toString())
-//                .clientSecret(clientSecret)
-//                .accessTokenValidity(Long.valueOf(ACCESS_TOKEN_EXPIRE_TIME).intValue())
-//                .refreshTokenValidity(Long.valueOf(REFRESH_TOKEN_EXPIRE_TIME).intValue())
-//                .authorities(Role.MEMBER.name())
-//                .authorizedGrantTypes("authorization_code,refresh_token")
-//                .scope("read, write")
-//                .build();
-//
-//        Application application = Application.builder()
-//                .name(applicationDto.getName())
-//                .company(applicationDto.getCompany())
-//                .restApiKey(clientId.toString())
-//                .oAuthClientDetails(oAuthClientDetails)
-//                .developer(developerRepository.findById(id).get())
-//                .build();
-//
-//        return applicationRepository.save(application).getName();
-//    }
-
     @Transactional
-    public String save(ApplicationDto applicationDto, Long id) throws Exception {
-        UUID clientUUId = UUID.randomUUID();
-        UUID clientSecretUUId = UUID.randomUUID();
-
-        String clientId = clientUUId.toString().replaceAll("-", "");
-        String clientSecret = clientSecretUUId.toString().replaceAll("-", "");
+    public String save(ApplicationDto applicationDto, String clientSecretUuid, String clientSecret, Long id) {
+        String clientId = UUID.randomUUID().toString().replaceAll("-", "");
 
         OAuthClientDetails oAuthClientDetails = OAuthClientDetails.builder()
                 .clientId(clientId)
-                .clientSecret(aes256.encrypt(clientSecret))
+                .clientSecret(clientSecret)
                 .accessTokenValidity(Long.valueOf(ACCESS_TOKEN_EXPIRE_TIME).intValue())
                 .refreshTokenValidity(Long.valueOf(REFRESH_TOKEN_EXPIRE_TIME).intValue())
                 .authorities(Role.MEMBER.name())
                 .authorizedGrantTypes("authorization_code,refresh_token")
                 .scope("read, write")
+                .secretKey(clientSecretUuid)
                 .build();
 
         Application application = Application.builder()
@@ -109,7 +81,7 @@ public class ApplicationService {
                 .company(applicationDto.getCompany())
                 .restApiKey(clientId)
                 .oAuthClientDetails(oAuthClientDetails)
-                .developer(developerRepository.findDeveloperById(id))
+                .developer(developerRepository.findById(id).get())
                 .build();
 
         return applicationRepository.save(application).getName();

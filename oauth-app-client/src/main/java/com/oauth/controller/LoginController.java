@@ -6,8 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Description : 컨트롤러
  *
@@ -18,11 +16,20 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class LoginController {
 
-    @Value("${security.oauth2.client.client-id}")
+    @Value("${spring.security.oauth2.client.registration.gsitm.client-id}")
     private String clientId;
 
-    @Value("${security.oauth2.client.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.gsitm.redirect-uri}")
     private String redirectUri;
+
+    @Value("${spring.security.oauth2.client.registration.gsitm.response-type}")
+    private String responseType;
+
+    @Value("${spring.security.oauth2.client.registration.gsitm.scope}")
+    private String scope;
+
+    @Value("${spring.security.oauth2.client.provider.gsitm.authorization-uri}")
+    private String authorizationUri;
 
     @GetMapping("gsitm-login")
     public String mainView() {
@@ -30,12 +37,16 @@ public class LoginController {
     }
 
     @GetMapping("login")
-    public String redirectLoginGsitm(HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
-        String referer = httpServletRequest.getHeader("referer");
-        log.info(referer);
+    public String redirectOAuth2Server(RedirectAttributes redirectAttributes) {
+//        String referer = httpServletRequest.getHeader("referer");
+//        redirectAttributes.addAttribute("continue", referer);
 
-        redirectAttributes.addAttribute("continue", referer);
+        redirectAttributes.addAttribute("client_id", clientId);
+        redirectAttributes.addAttribute("redirect_uri", redirectUri);
+        redirectAttributes.addAttribute("response_type", responseType);
+        redirectAttributes.addAttribute("scope", scope);
 
-        return "redirect:http://localhost:8090/oauth/authorize?client_id="+clientId+"&redirect_uri="+redirectUri+"&response_type=code&scope=read";
+        return "redirect:"+authorizationUri;
+//        return "redirect:http://localhost:8090/oauth/authorize?client_id="+clientId+"&redirect_uri="+redirectUri+"&response_type=code&scope=read";
     }
 }

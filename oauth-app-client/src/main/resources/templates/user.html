@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<div class="container" layout:fragment="content">
+    <h1>User</h1>
+    <script>
+        $(document).ready(function () {
+            loadUserInfo();
+        })
+        
+        function loadUserInfo() {
+            var accessToken = getCookieValue("accessToken");
+
+            $.ajax({
+                url: "http://localhost:8084/api/users",
+                type: "GET",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Content-type","application/json");
+                    xhr.setRequestHeader("Authorization","Bearer " + accessToken);
+                },
+                success: function (res) {
+                    showUserInfo(res)
+                }
+            })
+        }
+
+        function showUserInfo(userList) {
+            for (idx in userList) {
+                console.log(userList[idx]);
+                let card = `
+
+                `;
+            }
+        }
+    </script>
+</div>
+</html>

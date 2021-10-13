@@ -30,7 +30,7 @@ public class DeveloperRestController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping
-    private ResponseEntity signUp(@RequestBody DeveloperDto developerDto) {
+    private ResponseEntity<String> signUp(@RequestBody DeveloperDto developerDto) {
         developerDto.setPassword(passwordEncoder.encode(developerDto.getPassword()));
         return ResponseEntity.created(URI.create("/sign-in")).body(developerService.save(developerDto));
     }

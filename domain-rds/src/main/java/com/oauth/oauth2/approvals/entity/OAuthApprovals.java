@@ -27,16 +27,19 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OAuthApprovals {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "approvals_id", insertable = false, updatable = false)
-    private Long id;
-    private String userId;
-    private String clientId;
+    @EmbeddedId
+    private OAuthApprovalsId oAuthApprovalsId;
+
+    @Column(name = "SCOPE")
     private String scope;
+
+    @Column(name = "STATUS")
     private String status;
+
+    @Column(name = "EXPIRESAT")
     private LocalDateTime expiresAt;
 
     @LastModifiedDate
-    @Column(name="MODIFY_DATE_TIME")
-    private LocalDateTime modifyDateTime;}
+    @Column(name="LASTMODIFIEDAT")
+    private LocalDateTime modifyDateTime;
+}

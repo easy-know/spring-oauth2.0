@@ -30,22 +30,28 @@ public class DeveloperLoginFailureHandler implements AuthenticationFailureHandle
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws ServletException, IOException {
-        String errormsg;
+        String errorMessage;
+        String code;
 
         if (exception instanceof BadCredentialsException || exception instanceof InternalAuthenticationServiceException) {
-            errormsg = "아이디나 비밀번호가 맞지 않습니다.";
+            errorMessage = LoginErrorCode.BAD_CREDENTIAL.getDescription();
+            code = LoginErrorCode.BAD_CREDENTIAL.getCode();
         } else if (exception instanceof DisabledException) {
-            errormsg = "계정이 비활성화 되었습니다.";
+            errorMessage = LoginErrorCode.DISABLE.getDescription();
+            code = LoginErrorCode.DISABLE.getCode();
         } else if (exception instanceof CredentialsExpiredException) {
-            errormsg = "비밀번호 유효 기간이 만료됬습니다.";
+            errorMessage = LoginErrorCode.CREDENTIAL.getDescription();
+            code = LoginErrorCode.CREDENTIAL.getCode();
         } else {
-            errormsg = "로그인에 실패했습니다.";
+            errorMessage = LoginErrorCode.CREDENTIAL_EXPIRED.getDescription();
+            code = LoginErrorCode.CREDENTIAL_EXPIRED.getCode();
         }
 
-        log.info("errormsg: " + errormsg);
+        log.info("errorMessage: " + errorMessage);
+        log.info("code: " + code);
 
-        request.setAttribute("errorMessage", errormsg);
+        request.setAttribute("errorMessage", errorMessage);
 //        request.getRequestDispatcher(DEFAULT_FAILURE_URL).forward(request, response);
-        response.sendRedirect("sign-in");
+        response.sendRedirect("sign-in?error="+code);
     }
 }

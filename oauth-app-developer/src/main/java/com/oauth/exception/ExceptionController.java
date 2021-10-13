@@ -24,6 +24,7 @@ public class ExceptionController {
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity existDeveloperError(Throwable throwable) {
         log.warn("InternalServerError - message : {}", throwable.getMessage());
+//        return ResponseEntity.ok().body(new ErrorResponse().makeThrowableErrorResponse(throwable));
         return new ResponseEntity(new ErrorResponse().makeThrowableErrorResponse(throwable), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

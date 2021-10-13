@@ -1,5 +1,6 @@
 package com.oauth.config;
 
+import com.oauth.encryption.SEEDPasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -31,5 +32,10 @@ public class OAuth2WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public PasswordEncoder seedPasswordEncoder() {
+        return new SEEDPasswordEncoder();
     }
 }
